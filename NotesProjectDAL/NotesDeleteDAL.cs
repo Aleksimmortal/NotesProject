@@ -14,6 +14,7 @@ namespace NotesProjectDAL
         public void Delete(DateTime date)
         {
             var notification = new List<Notes>();
+            var notificationAfterDelete = new List<Notes>();
             if (File.Exists(BurnDisk))
             {
                 using (FileStream fs = new FileStream(BurnDisk, FileMode.OpenOrCreate))
@@ -27,6 +28,14 @@ namespace NotesProjectDAL
             }
             int indexDate = Convert.ToInt32(notification.IndexOf(date));// Не знаю как извлечь индекс записи даты для удаления заметки?!
             notification.RemoveAt(indexDate);
+            Write(notification);
+        }
+        private void Write(List<Notes> note)
+        {
+            using (FileStream fs = new FileStream(BurnDisk, FileMode.OpenOrCreate))
+            {
+                JsonSerializer.Serialize<List<Notes>>(fs, note);
+            }
         }
     }
 }
